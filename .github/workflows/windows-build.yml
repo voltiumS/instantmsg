@@ -1,0 +1,30 @@
+name: Generate Windows EXE
+on: 
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install Tools
+        run: |
+          pip install nuitka PyQt6 cryptography supabase
+          
+      - name: Build with Nuitka
+        run: |
+          python -m nuitka --standalone --onefile --enable-plugin=pyqt6 --include-qt-plugins=sensible --windows-disable-console --output-filename="NIM_1999" nim.py
+          
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIM-Windows-Build
+          path: "*.exe"
