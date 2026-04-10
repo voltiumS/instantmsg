@@ -1,32 +1,63 @@
 name: Generate Windows EXE
+
 on: 
+
   push:
+
     branches: [ "main" ]
+
   workflow_dispatch:
 
+
+
 jobs:
+
   build:
+
     runs-on: windows-latest
+
     steps:
+
       - name: Checkout Code
+
         uses: actions/checkout@v4
+
       
+
       - name: Set up Python
+
         uses: actions/setup-python@v5
+
         with:
+
           python-version: '3.11'
+
           
+
       - name: Install Dependencies
+
         run: |
+
           python -m pip install --upgrade pip
+
           pip install nuitka PyQt6 cryptography supabase postgrest gotrue realtime requests
+
           
+
       - name: Build with Nuitka
+
         run: |
-          python -m nuitka --standalone --onefile --enable-plugin=pyqt6 --include-qt-plugins=sensible --windows-console-mode=disable --collect-all=supabase --collect-all=cryptography --collect-all=postgrest --low-memory --assume-yes-for-downloads --output-filename="NIM_1999" nim.py
+
+          python -m nuitka --standalone --onefile --enable-plugin=pyqt6 --include-qt-plugins=sensible --windows-console-mode=disable --collect-all=supabase --collect-all=cryptography --low-memory --assume-yes-for-downloads --output-filename=NIM1999 nim.py
+
           
+
       - name: Upload EXE
+
         uses: actions/upload-artifact@v4
+
         with:
+
           name: NIM-Windows-Build
-          path: NIM_1999.exe
+
+          path: NIM.exe
