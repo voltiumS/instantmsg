@@ -17,11 +17,12 @@ jobs:
           
       - name: Install Tools
         run: |
-          pip install nuitka PyQt6 cryptography supabase
+          python -m pip install --upgrade pip
+          pip install nuitka PyQt6 cryptography supabase postgrest gotrue realtime
           
       - name: Build with Nuitka
         run: |
-          python -m nuitka --standalone --onefile --enable-plugin=pyqt6 --include-qt-plugins=sensible --windows-disable-console --output-filename="NIM_1999" nim.py
+          python -m nuitka --standalone --onefile --enable-plugin=pyqt6 --include-qt-plugins=sensible --windows-console-mode=disable --collect-all=supabase --collect-all=cryptography --low-memory --output-filename="NIM_1999" nim.py
           
       - name: Upload EXE
         uses: actions/upload-artifact@v4
