@@ -8,39 +8,25 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
       
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip' # Speeds up future builds
           
-      - name: Install Compiler and Dependencies
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          # Explicitly installing everything Supabase and PyQt6 might need
           pip install nuitka PyQt6 cryptography supabase postgrest gotrue realtime requests
           
-      - name: Build with Nuitka (Zero-Error Config)
+      - name: Build with Nuitka
         run: |
-          python -m nuitka `
-            --standalone `
-            --onefile `
-            --enable-plugin=pyqt6 `
-            --include-qt-plugins=sensible `
-            --windows-console-mode=disable `
-            --collect-all=supabase `
-            --collect-all=cryptography `
-            --collect-all=postgrest `
-            --low-memory `
-            --assume-yes-for-downloads `
-            --output-filename="NIM_1999" `
-            nim.py
+          python -m nuitka --standalone --onefile --enable-plugin=pyqt6 --include-qt-plugins=sensible --windows-console-mode=disable --collect-all=supabase --collect-all=cryptography --collect-all=postgrest --low-memory --assume-yes-for-downloads --output-filename="NIM_1999" nim.py
           
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
           name: NIM-Windows-Build
-          path: "*.exe"
-          if-no-files-found: error # This will alert us immediately if the build didn't create the file
+          path: NIM_1999.exe
